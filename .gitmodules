@@ -1,0 +1,6 @@
+[submodule "extern/gif-h"]
+	path = extern/gif-h
+	url = https://github.com/charlietangora/gif-h
+[submodule "extern/matplotlib-cpp"]
+	path = extern/matplotlib-cpp
+	url = https://github.com/lava/matplotlib-cpp
