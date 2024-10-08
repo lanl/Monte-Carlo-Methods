@@ -16,5 +16,5 @@ target_include_directories(main PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/extern/stb
   ${CMAKE_CURRENT_SOURCE_DIR}/extern/matplotlib-cpp
 )
-
+target_compile_options(main PRIVATE -Wno-deprecated)
 target_link_libraries(main PRIVATE matplotlib_cpp)

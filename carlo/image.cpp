@@ -73,7 +73,7 @@ void digit::blit_number(uint32_t number, std::size_t x, std::size_t y, std::vect
 
 // Do the gif writing, then execute the step method
 template<>
-void gif_export<method::metropolis>::step()
+void gif_export<model::ising>::step()
 {
   if (!frame.size())
     frame.resize(method->model().size() * method->model().size() * 4);
@@ -105,14 +105,14 @@ void gif_export<method::metropolis>::step()
 }
 
 template<>
-void gif_export<method::metropolis>::write()
+void gif_export<model::ising>::write()
 {
   GifEnd(reinterpret_cast<GifWriter*>(gif_writer.get()));
 }
 
 // Construct the gif writer
 template<>
-void gif_export<method::metropolis>::_construct_writer(const std::string& filename)
+void gif_export<model::ising>::_construct_writer(const std::string& filename)
 {
   auto* writer = new GifWriter();
   gif_writer = std::shared_ptr<void>(writer, [](void* ptr) { delete reinterpret_cast<GifWriter*>(ptr); });

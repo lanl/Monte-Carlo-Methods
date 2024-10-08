@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "model/ising.hpp"
+
 namespace carlo
 {
 
@@ -21,29 +23,41 @@ private:
   std::vector<uint8_t> image_data;
 };
 
-template<typename M>
+template<typename Model>
 struct gif_export
 {
-  template<typename... Args>
-  gif_export(const std::string& filename, Args&&... args) :
-    method( std::make_unique<M>(std::forward<Args>(args)...) )
-  { _construct_writer(filename); }
-
-  M* operator->() const
+  method::base<Model>* operator->() const
   {
     return method.get();
   }
+
+  template<typename Method, typename... Args>
+  inline static gif_export make(const std::string& filename, Args&&... args)
+  {
+    static_assert(std::is_base_of_v<method::base<Model>, Method>);
+    gif_export g;
+    g.method = std::make_shared<Method>(std::forward<Args>(args)...);
+    g._construct_writer(filename);
+    return g;
+  } 
 
   void write();
   void step();
 
 private:
+  gif_export() = default;
+  /*
+  template<typename... Args>
+  gif_export(const std::string& filename, Args&&... args) :
+    method( std::make_unique<M>(std::forward<Args>(args)...) )
+  { _construct_writer(filename); }*/
+
   void _construct_writer(const std::string& filename);
 
   std::size_t frame_number = 0;
   digit _digit;
   std::vector<std::uint8_t> frame;
-  std::unique_ptr<M> method;
+  std::shared_ptr<method::base<Model>> method;
   std::shared_ptr<void> gif_writer;
 };
 

@@ -69,13 +69,16 @@ namespace model
       current_step++;
     }
 
-    void show()
+    void write(const std::string& filename)
     {
       namespace plt = matplotlibcpp;
 
       // Generate matplotlib image
       plt::plot(steps, total_mag_steps);
-       plt::save("./total_mag.png");
+      plt::title("Total Magnetization");
+      plt::xlabel("Iteration");
+      plt::ylabel("Magnetization");
+      plt::save(filename);
     }
 
   private:
@@ -89,7 +92,7 @@ namespace model
 // The methods own the above models
 namespace method
 {
-  template<typename Model, typename T>
+  template<typename Model>
   struct base
   {
     template<typename... Args>
@@ -132,7 +135,7 @@ namespace method
     std::unordered_map<std::type_index, std::shared_ptr<data::attachment<Model>>> attachments;
   };
 
-  struct metropolis : base<model::ising, metropolis>
+  struct metropolis : base<model::ising>
   {
     metropolis(double J, double T, std::size_t dimension);
 

@@ -7,21 +7,21 @@ int main()
 {
   using namespace carlo;
   
-  gif_export<method::metropolis> mtr("test.gif", 2.0, 1.8, 256);
+  // Construct the metropolis method for use with the ising model
+  // wrapped in a gif_export that will write the state out to a .gif file
+  // at the end
+  auto mtr = gif_export<model::ising>::make<method::metropolis>("test.gif", 2.0, 1.8, 256);
+
+  // Add a total_magentization attachment which writes the data 
+  // out to total_mag.png
   mtr->add_attachment<model::total_mag>();
 
-  for (int i = 0; i < 100; i++)
-  {
-    //if (i % 100 == 0)
-      //draw_state("test" + std::to_string(i) + ".bmp", mtr.model());
-    mtr.step();
-  }
+  // Go through the method
+  for (int i = 0; i < 100; i++) mtr.step();
+
+  // Write the .gif file
   mtr.write();
 
-  mtr->get_attachment<model::total_mag>()->show();
-
-  /*
-  gif_export<method::metropolis> exp("test.gif", 5.0, 0.05, 256);
-  for (int i = 0; i < 1000; i++) exp.step();
-  exp.write();*/
+  // Export the attachment data
+  mtr->get_attachment<model::total_mag>()->write("total_mag.png");
 }
