@@ -2,6 +2,8 @@
 #include <array>
 #include <iostream>
 
+#include <fftw3.h>
+
 namespace carlo::model
 {
 
@@ -11,7 +13,7 @@ ising::ising(std::size_t dimension) :
   data.resize(dimension * dimension);
 }
 
-ising::spin ising::operator[](std::size_t x, std::size_t y) const
+ising::spin ising::operator()(std::size_t x, std::size_t y) const
 {
   return static_cast<spin>( ((int)data[y * _dimension + x] * 2) - 1 );
 }
@@ -64,7 +66,7 @@ metropolis::metropolis(double J, double T, std::size_t dimension) :
         { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } }
       };
 
-      const auto this_spin = _model[x, y];
+      const auto this_spin = _model(x, y);
 
       for (auto& off : offsets)
       {
@@ -74,7 +76,7 @@ metropolis::metropolis(double J, double T, std::size_t dimension) :
           ( y + off.second ) % _model.size()
         };
 
-        E += this_spin * _model[ pos.first, pos.second ];
+        E += this_spin * _model( pos.first, pos.second );
       }
     }
 
@@ -92,7 +94,7 @@ void metropolis::method_step()
     };
 
     // We're trying to flip at (x, y) so we need to sum up all the surrounding values
-    double s  = _model[x, y];
+    double s  = _model(x, y);
     double nb = 0.0;
     for (const auto& off : offsets)
     {
@@ -101,7 +103,7 @@ void metropolis::method_step()
         ( (int)x + off.first  ) % _model.size(),
         ( (int)y + off.second ) % _model.size()
       };
-      nb += (int)_model[pos.first, pos.second];
+      nb += (int)_model(pos.first, pos.second);
     } 
 
     const auto dE = 2.0 * s * nb;
@@ -126,6 +128,8 @@ void metropolis::method_step()
       inner(x, y);*/
 }
 
+//block_gibbs::block_gibbs(double beta, std::size_t )
+
 }
 
 std::string operator*(carlo::model::ising::spin s)
@@ -134,5 +138,6 @@ std::string operator*(carlo::model::ising::spin s)
   {
   case carlo::model::ising::up:    return "u";
   case carlo::model::ising::down:  return "d";
+  default: return "";
   }
 }

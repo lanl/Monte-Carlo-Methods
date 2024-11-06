@@ -19,7 +19,7 @@ void draw_state(const std::string& file, const model::ising& state)
   std::vector<uint8_t> data(state.size() * state.size());
   for (std::size_t y = 0; y < state.size(); y++)
     for (std::size_t x = 0; x < state.size(); x++)
-      data[y * state.size() + x] = 255 * static_cast<int>(state[x, y]);
+      data[y * state.size() + x] = 255 * static_cast<int>(state(x, y));
 
   assert(stbi_write_bmp(file.c_str(), state.size(), state.size(), 1, data.data()));
 }
@@ -81,7 +81,7 @@ void gif_export<model::ising>::step()
   for (std::size_t y = 0; y < method->model().size(); y++)
     for (std::size_t x = 0; x < method->model().size(); x++)
     {
-      const auto val = 255 * static_cast<int>( method->model()[x, y] );
+      const auto val = 255 * static_cast<int>( method->model()(x, y) );
       frame[(y * method->model().size() + x) * 4 + 0] = val;
       frame[(y * method->model().size() + x) * 4 + 1] = val;
       frame[(y * method->model().size() + x) * 4 + 2] = val;
