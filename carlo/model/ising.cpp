@@ -128,8 +128,6 @@ void metropolis::method_step()
       inner(x, y);*/
 }
 
-//block_gibbs::block_gibbs(double beta, std::size_t )
-
 }
 
 std::string operator*(carlo::model::ising::spin s)
